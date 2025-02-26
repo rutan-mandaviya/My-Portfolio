@@ -19,7 +19,7 @@ const FinalSmoothMarquee = () => {
     },
     {
       id: 2,
-      title: "Color Picker Pro",
+      title: "Chrome extension - Color Picker",
       video: "/color picker.mp4", // Changed from image to video
       tags: ["Javascript","Manifest.json","html5/css3"],
       github: "https://github.com/rutan-mandaviya/Color-Picker-Pro",

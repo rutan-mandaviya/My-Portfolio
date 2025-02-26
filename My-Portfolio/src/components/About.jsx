@@ -16,7 +16,7 @@ function About() {
         </div>
         <div className='relative w-[90%] lg:w-1/3 h-[250px] lg:h-[40%] rounded-md border-8 border-zinc-900 overflow-hidden shadow-[0px_0px_15px_5px_rgba(255,255,255,0.8)]'>
           <img 
-            src='https://i.pinimg.com/736x/6e/e1/42/6ee14205af61438867a41ea3968564b4.jpg' 
+            src='public/image.png' 
             className='w-full h-full object-cover filter contrast-[1.] grayscale' 
             alt='image' 
           />
