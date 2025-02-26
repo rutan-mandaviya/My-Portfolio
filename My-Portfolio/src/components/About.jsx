@@ -17,7 +17,7 @@ function About() {
         <div className='relative w-[90%] lg:w-1/3 h-[250px] lg:h-[40%] rounded-md border-8 border-zinc-900 overflow-hidden shadow-[0px_0px_15px_5px_rgba(255,255,255,0.8)]'>
           <img 
             src='image.png' 
-            className='w-full h-full object-cover filter contrast-[1.] grayscale' 
+            className='w-full h-full object-cover filter ' 
             alt='image' 
           />
           <div className='absolute bottom-0 left-0 w-full h-full bg-[rgba(0,0,0,0.5)] opacity-100 transition-opacity duration-300 hover:opacity-0'></div>

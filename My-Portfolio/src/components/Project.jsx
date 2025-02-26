@@ -1,7 +1,6 @@
-
 "use client"
 
-import React, { useEffect, useRef, useState } from "react"
+import { useEffect, useRef, useState, useMemo } from "react"
 import { Github } from "lucide-react"
 
 const FinalSmoothMarquee = () => {
@@ -9,44 +8,49 @@ const FinalSmoothMarquee = () => {
   const containerRef = useRef(null)
   const [windowWidth, setWindowWidth] = useState(typeof window !== "undefined" ? window.innerWidth : 0)
 
-  const projects = [
-    {
-      id: 1,
-      title: "Hospital Managemnet",
-      video: "/Recording 2025-02-21 121525.mp4" , // Changed from image to video
-      tags: ["Python", "Flask","Mysql"],
-      github: "https://github.com/rutan-mandaviya/Hospital-Management-System",
-    },
-    {
-      id: 2,
-      title: "Chrome extension - Color Picker",
-      video: "/color picker.mp4", // Changed from image to video
-      tags: ["Javascript","Manifest.json","html5/css3"],
-      github: "https://github.com/rutan-mandaviya/Color-Picker-Pro",
-    },
-    {
-      id: 3,
-      title: "Music Player",
-      video: "Music Player.mp4", // Changed from image to video
-      tags: ["Javascript","HTML5/CSS3","Templates"],
-      github: "https://galaxy-payer-rutan.netlify.app/",
-    },
-    {
-      id: 4,
-      title: "Portfolio",
-      video: "Portfolio.mp4", // Changed from image to video
-      tags: ["Javascript","HTML5/CSS3","Mono"],
-      github: "https://galaxy-payer-rutan.netlify.app/",
-    },
-  ]
+  const projects = useMemo(
+    () => [
+      {
+        id: 1,
+        title: "Hospital Managemnet",
+        video: "/Recording 2025-02-21 121525.mp4",
+        tags: ["Python", "Flask", "Mysql"],
+        github: "https://github.com/rutan-mandaviya/Hospital-Management-System",
+      },
+      {
+        id: 2,
+        title: "Chrome extension - Color Picker",
+        video: "/color picker.mp4",
+        tags: ["Javascript", "Manifest.json", "html5/css3"],
+        github: "https://github.com/rutan-mandaviya/Color-Picker-Pro",
+      },
+      {
+        id: 3,
+        title: "Music Player",
+        video: "Music Player.mp4",
+        tags: ["Javascript", "HTML5/CSS3", "Templates"],
+        github: "https://galaxy-payer-rutan.netlify.app/",
+      },
+      {
+        id: 4,
+        title: "Portfolio",
+        video: "Portfolio.mp4",
+        tags: ["Javascript", "HTML5/CSS3", "Mono"],
+        github: "https://galaxy-payer-rutan.netlify.app/",
+      },
+    ],
+    [],
+  )
 
   useEffect(() => {
     const handleResize = () => {
       setWindowWidth(window.innerWidth)
     }
 
-    window.addEventListener("resize", handleResize)
-    return () => window.removeEventListener("resize", handleResize)
+    const debouncedHandleResize = debounce(handleResize, 250)
+
+    window.addEventListener("resize", debouncedHandleResize)
+    return () => window.removeEventListener("resize", debouncedHandleResize)
   }, [])
 
   useEffect(() => {
@@ -54,7 +58,7 @@ const FinalSmoothMarquee = () => {
     const container = containerRef.current
     if (!marqueeElement || !container) return
 
-    const itemWidth = windowWidth < 768 ? 300 : 500 // Adjust card width for mobile
+    const itemWidth = windowWidth < 768 ? 300 : 500
     const totalWidth = itemWidth * projects.length
     const viewportWidth = container.clientWidth
 
@@ -86,11 +90,9 @@ const FinalSmoothMarquee = () => {
               position: relative;
             ">
               <video
-                 loading="lazy"
+                loading="lazy"
                 src="${project.video}" 
                 alt="${project.title}"
-                
- 
                 style="
                   width: 100%;
                   height: 100%;
@@ -100,7 +102,6 @@ const FinalSmoothMarquee = () => {
                 class="project-video"
                 loop
                 muted
-                autoplay
                 playsinline
               ></video>
               <div class="github-overlay" style="
@@ -154,20 +155,13 @@ const FinalSmoothMarquee = () => {
                     font-size: ${windowWidth < 768 ? "1rem" : "1.6rem"};
                     color: #fff;
                     text-decoration: none;
-                    
                   "
                 >
                   <i class="ri-github-line"></i>
-                  
-                
                 </a>
               </div>
             </div>
-            
           </div>
-          
-          
-        
         `
       })
     }
@@ -178,18 +172,31 @@ const FinalSmoothMarquee = () => {
     allCards.forEach((card) => {
       const video = card.querySelector(".project-video")
 
+      const observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              video.play()
+            } else {
+              video.pause()
+            }
+          })
+        },
+        { threshold: 0.5 },
+      )
+
+      observer.observe(card)
+
       card.addEventListener("mouseenter", () => {
         card.style.transform = "translateY(-15px)"
         card.style.boxShadow = "0 20px 40px rgba(0, 0, 0, 0.7)"
         card.querySelector(".github-overlay").style.opacity = "1"
-        video.play()
       })
 
       card.addEventListener("mouseleave", () => {
         card.style.transform = "translateY(0)"
         card.style.boxShadow = "0 10px 30px rgba(0, 0, 0, 0.5)"
         card.querySelector(".github-overlay").style.opacity = "0"
-        video.pause()
       })
 
       card.addEventListener("click", (e) => {
@@ -201,7 +208,7 @@ const FinalSmoothMarquee = () => {
 
     let animationFrame
     let position = 0
-    let speed = windowWidth < 768 ? 0.5 : 1.5;
+    let speed = windowWidth < 768 ? 0.5 : 1.5
 
     const animate = () => {
       position -= speed
@@ -216,13 +223,12 @@ const FinalSmoothMarquee = () => {
 
     animate()
 
-    // Slow down on hover instead of complete stop
     container.addEventListener("mouseenter", () => {
-        speed = windowWidth < 768 ? 0.2 : 0.5// Reduced speed when hovering
+      speed = windowWidth < 768 ? 0.2 : 0.5
     })
 
     container.addEventListener("mouseleave", () => {
-        speed = windowWidth < 768 ? 0.5 : 1.5 // Return to normal speed when not hovering
+      speed = windowWidth < 768 ? 0.5 : 1.5
     })
 
     const handleResize = () => {
@@ -238,7 +244,7 @@ const FinalSmoothMarquee = () => {
       cancelAnimationFrame(animationFrame)
       window.removeEventListener("resize", handleResize)
     }
-  }, [windowWidth])
+  }, [windowWidth, projects])
 
   return (
     <div
@@ -410,11 +416,22 @@ const FinalSmoothMarquee = () => {
         >
           {/* Content will be populated by JavaScript */}
         </div>
-      </div>{" "}
-      {/* Yeh marquee container ka closing tag hai */}
+      </div>
       <div className="w-full h-1 rounded-2xl mt-10 bg-gradient-to-r from-black via-zinc-800 to-black"></div>
     </div>
   )
+}
+
+function debounce(func, wait) {
+  let timeout
+  return function executedFunction(...args) {
+    const later = () => {
+      clearTimeout(timeout)
+      func(...args)
+    }
+    clearTimeout(timeout)
+    timeout = setTimeout(later, wait)
+  }
 }
 
 export default FinalSmoothMarquee
