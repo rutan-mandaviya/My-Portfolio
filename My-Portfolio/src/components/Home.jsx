@@ -21,7 +21,7 @@ function Home() {
     <div className='w-full h-full flex flex-col items-center  bg-zinc-700 '>
         <div style={{boxShadow:"0 0 3em #6d6d6d"}} className='w-44 h-44 rounded-full overflow-hidden absolute left-1/2 top-1/ -translate-x-[50%] -translate-y-[50%]' >
             
-        <img className='w-full h-full object-cover object-top ' src="/public/rutan mandaviya - 1-removebg-preview.jpg" alt="" />
+        <img className='w-full h-full object-cover object-top ' src="rutan mandaviya - 1-removebg-preview.jpg" alt="" />
         </div> 
         <div className="w-full h-[52vh]  absolute top-[85%] z-1 overflow-hidden">
   <video 
