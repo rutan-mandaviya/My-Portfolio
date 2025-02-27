@@ -1,12 +1,13 @@
 "use client"
 
 import { useEffect, useRef, useState, useMemo } from "react"
-import { Github } from "lucide-react"
+import { Github, X } from "lucide-react"
 
 const FinalSmoothMarquee = () => {
   const marqueeRef = useRef(null)
   const containerRef = useRef(null)
   const [windowWidth, setWindowWidth] = useState(typeof window !== "undefined" ? window.innerWidth : 0)
+  const [showAllProjects, setShowAllProjects] = useState(false)
 
   const projects = useMemo(
     () => [
@@ -117,7 +118,7 @@ const FinalSmoothMarquee = () => {
                 opacity: 0;
                 transition: opacity 0.3s ease;
               ">
-                <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                   <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path>
                 </svg>
               </div>
@@ -328,6 +329,7 @@ const FinalSmoothMarquee = () => {
               e.currentTarget.style.backgroundColor = "rgba(255, 255, 255, 0.1)"
               e.currentTarget.style.transform = "translateY(0)"
             }}
+            onClick={() => setShowAllProjects(true)}
           >
             See All Projects
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -418,6 +420,304 @@ const FinalSmoothMarquee = () => {
         </div>
       </div>
       <div className="w-full h-1 rounded-2xl mt-10 bg-gradient-to-r from-black via-zinc-800 to-black"></div>
+
+      {showAllProjects && (
+        <AllProjects projects={projects} onClose={() => setShowAllProjects(false)} windowWidth={windowWidth} />
+      )}
+    </div>
+  )
+}
+
+const AllProjects = ({ projects, onClose, windowWidth }) => {
+  useEffect(() => {
+    // Add keyboard event listener to close on ESC key
+    const handleKeyDown = (e) => {
+      if (e.key === "Escape") onClose()
+    }
+
+    document.addEventListener("keydown", handleKeyDown)
+
+    // Prevent scrolling on body when modal is open
+    document.body.style.overflow = "hidden"
+
+    return () => {
+      document.removeEventListener("keydown", handleKeyDown)
+      document.body.style.overflow = "auto"
+    }
+  }, [onClose])
+
+  useEffect(() => {
+    // Play videos when they're in view
+    const videos = document.querySelectorAll(".project-video-grid")
+
+    // Add error handling for each video
+    videos.forEach((video) => {
+      video.addEventListener("error", (e) => {
+        console.error("Video error:", e)
+        // Replace with a placeholder if video fails to load
+        const parent = video.parentElement
+        if (parent) {
+          const placeholder = document.createElement("div")
+          placeholder.className = "video-placeholder"
+          placeholder.style.width = "100%"
+          placeholder.style.height = "100%"
+          placeholder.style.backgroundColor = "#222"
+          placeholder.style.display = "flex"
+          placeholder.style.alignItems = "center"
+          placeholder.style.justifyContent = "center"
+          placeholder.innerHTML = '<span style="color: #666; font-size: 1rem;">Video preview unavailable</span>'
+          parent.replaceChild(placeholder, video)
+        }
+      })
+    })
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          const video = entry.target
+          if (entry.isIntersecting) {
+            // Check if the video is ready to play
+            if (video.readyState >= 2) {
+              video.play().catch((err) => {
+                console.warn("Could not play video:", err)
+              })
+            } else {
+              // If not ready, wait for it to be loaded enough to play
+              video.addEventListener(
+                "loadeddata",
+                () => {
+                  if (entry.isIntersecting) {
+                    video.play().catch((err) => {
+                      console.warn("Could not play video after loading:", err)
+                    })
+                  }
+                },
+                { once: true },
+              )
+            }
+          } else {
+            video.pause()
+          }
+        })
+      },
+      { threshold: 0.5 },
+    )
+
+    videos.forEach((video) => observer.observe(video))
+
+    return () => {
+      videos.forEach((video) => {
+        observer.unobserve(video)
+        video.removeEventListener("error", () => {})
+      })
+    }
+  }, [])
+
+  return (
+    <div
+      style={{
+        position: "fixed",
+        top: 0,
+        left: 0,
+        width: "100%",
+        height: "100%",
+        backgroundColor: "rgba(0, 0, 0, 0.95)",
+        zIndex: 100,
+        overflowY: "auto",
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        padding: "20px",
+      }}
+    >
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          width: "100%",
+          maxWidth: "1400px",
+          padding: "20px",
+          marginBottom: "20px",
+        }}
+      >
+        <h2
+          style={{
+            fontSize: windowWidth < 768 ? "2rem" : "3rem",
+            fontWeight: "bold",
+            margin: 0,
+          }}
+        >
+          All Projects
+        </h2>
+        <button
+          onClick={onClose}
+          style={{
+            backgroundColor: "transparent",
+            color: "white",
+            border: "none",
+            borderRadius: "50%",
+            width: "40px",
+            height: "40px",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            cursor: "pointer",
+            transition: "all 0.3s ease",
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.backgroundColor = "rgba(255, 255, 255, 0.1)"
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.backgroundColor = "transparent"
+          }}
+        >
+          <X size={24} />
+        </button>
+      </div>
+
+      <div
+        style={{
+          display: "grid",
+          gridTemplateColumns: windowWidth < 768 ? "1fr" : "repeat(2, 1fr)",
+          gap: "30px",
+          width: "100%",
+          maxWidth: "1200px",
+          padding: "0 20px 40px",
+        }}
+      >
+        {projects.map((project) => (
+          <div
+            key={project.id}
+            style={{
+              borderRadius: "16px",
+              // border:"2px solid #dadada",
+              overflow: "hidden",
+              backgroundColor: "#111",
+              transition: "transform 0.3s ease, box-shadow 0.3s ease",
+              boxShadow: "0 10px 30px rgba(0, 0, 0, 0.5)",
+              position: "relative",
+            }}
+            className="project-card-grid"
+            onMouseEnter={(e) => {
+              e.currentTarget.style.transform = "translateY(-15px)"
+              e.currentTarget.style.boxShadow = "0 20px 40px rgba(0, 0, 0, 0.7)"
+              e.currentTarget.querySelector(".github-overlay-grid").style.opacity = "1"
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.transform = "translateY(0)"
+              e.currentTarget.style.boxShadow = "0 10px 30px rgba(0, 0, 0, 0.5)"
+              e.currentTarget.querySelector(".github-overlay-grid").style.opacity = "0"
+            }}
+          >
+            <div
+              style={{
+                width: "100%",
+                height: windowWidth < 768 ? "200px" : "300px",
+                overflow: "hidden",
+                position: "relative",
+              }}
+            >
+              <video
+                className="project-video-grid"
+                src={project.video}
+                style={{
+                  width: "100%",
+                  height: "100%",
+                  objectFit: "cover",
+                  transition: "transform 0.5s ease",
+                }}
+                loop
+                muted
+                playsInline
+                preload="metadata"
+                onError={(e) => {
+                  console.error(`Error loading video for ${project.title}:`, e)
+                  // The error handler in useEffect will handle this
+                }}
+              />
+              <div
+                className="github-overlay-grid"
+                style={{
+                  position: "absolute",
+                  top: 0,
+                  left: 0,
+                  width: "100%",
+                  height: "100%",
+                  backgroundColor: "rgba(0, 0, 0, 0.7)",
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  opacity: 0,
+                  transition: "opacity 0.3s ease",
+                  cursor: "pointer",
+                }}
+                onClick={() => window.open(project.github, "_blank")}
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="48"
+                  height="48"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="white"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
+                  <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path>
+                </svg>
+              </div>
+            </div>
+            <div style={{ padding: windowWidth < 768 ? "16px" : "24px" }}>
+              <div
+                style={{
+                  display: "flex",
+                  gap: "8px",
+                  marginBottom: "12px",
+                  flexWrap: "wrap",
+                }}
+              >
+                {project.tags.map((tag, index) => (
+                  <span
+                    key={index}
+                    style={{
+                      backgroundColor: "rgba(255, 255, 255, 0.1)",
+                      padding: "4px 10px",
+                      borderRadius: "20px",
+                      fontSize: windowWidth < 768 ? "0.7rem" : "0.9rem",
+                    }}
+                  >
+                    {tag}
+                  </span>
+                ))}
+              </div>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                <h3
+                  style={{
+                    fontSize: windowWidth < 768 ? "1.5rem" : "2rem",
+                    margin: 0,
+                  }}
+                >
+                  {project.title}
+                </h3>
+                <a
+                  href={project.github}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  style={{
+                    fontSize: windowWidth < 768 ? "1rem" : "1.6rem",
+                    color: "#fff",
+                    textDecoration: "none",
+                  }}
+                >
+                  <i className="ri-github-line"></i>
+                </a>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
     </div>
   )
 }
