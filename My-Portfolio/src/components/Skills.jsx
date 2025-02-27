@@ -2,7 +2,7 @@ import React from 'react';
 
 function Skills() {
   return (
-    <div className='w-full min-h-[30vw] flex flex-col justify-center items-center px-4 md:px-10'>
+    <div className='w-full min-h-[30vw] font-[Montserrat] flex flex-col justify-center items-center px-4 md:px-10'>
       <div className='relative flex items-center justify-center w-full h-20 bg-black'>
         <div className='absolute left-0 right-0 flex items-center justify-center'>
           <div className='w-1/4 border-t border-gray-600'></div>

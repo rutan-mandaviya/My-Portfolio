@@ -44,7 +44,7 @@ function Contact() {
   };
 
   return (
-    <div className="w-full flex flex-col items-center gap-6 mt-10 px-4 sm:px-8">
+    <div className="w-full flex flex-col items-center gap-6 mt-10 px-4 sm:px-8 font-[Montserrat]">
       {/* Heading Section */}
       <div className="relative flex items-center justify-center w-full h-20 bg-black">
         <div className="absolute flex items-center justify-center w-full">

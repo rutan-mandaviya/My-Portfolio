@@ -2,7 +2,7 @@ import React from 'react';
 
 function Home() {
   return (
-    <div className='flex flex-col h-full scroll-smooth   '>
+    <div className='flex flex-col h-full scroll-smooth  font-[Montserrat] '>
         <div className="w-full h-15 bg-black">
 
         </div>

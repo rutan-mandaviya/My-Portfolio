@@ -2,7 +2,7 @@ import React from 'react'
 
 function About() {
   return (
-    <div className=''>
+    <div className='font-[Montserrat]'>
       <div className='w-full min-h-[80vh] flex flex-col lg:flex-row items-center justify-center gap-15 px-5'>
         <div className='w-full lg:w-1/3 flex flex-col gap-8 text-center lg:text-left'>
           <h1 className='text-3xl font-medium mt-10 md:text-5xl'>More about <span className='font-[cursive] opacity-50 text-[#999999] font-extralight'><i>myself</i></span></h1>

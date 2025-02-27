@@ -256,6 +256,8 @@ const FinalSmoothMarquee = () => {
         padding: windowWidth < 768 ? "40px 0 30px" : "80px 0 60px",
         overflow: "hidden",
         position: "relative",
+        fontFamily:'Montserrat',
+
       }}
     >
       <div

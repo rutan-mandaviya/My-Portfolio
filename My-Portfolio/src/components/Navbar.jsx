@@ -6,7 +6,7 @@ function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
 
   return (
-    <nav className="w-full h-16 z-20 bg-[#0c0d0d] border-b border-zinc-900 fixed top-0 font-medium text-[#979797] flex items-center px-6 md:px-16 lg:px-32">
+    <nav className="w-full h-16 z-20 bg-[#0c0d0d] border-b border-zinc-900 fixed top-0 font-medium font-[Montserrat] text-[#979797] flex items-center px-6 md:px-16 lg:px-32">
       {/* Logo */}
       <div className="text-lg font-semibold text-white">
         <Link to="home" smooth={true} duration={500} className="cursor-pointer">
