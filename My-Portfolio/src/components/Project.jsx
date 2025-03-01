@@ -37,7 +37,7 @@ const FinalSmoothMarquee = () => {
         title: "Portfolio",
         video: "Portfolio.mp4",
         tags: ["Javascript", "HTML5/CSS3", "Mono"],
-        github: "https://galaxy-payer-rutan.netlify.app/",
+        github: "https://github.com/rutan-mandaviya/first_portfolio",
       },
     ],
     [],
